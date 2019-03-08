@@ -22,7 +22,6 @@ export PATH="$NDK_TOOLCHAIN_VERSION:$PATH"
 
 if [ "$SETUP_PACKAGES" == "1" ]
 then
-    # Setup Dependency packages
     for packages in "${INSTALLED_PACKAGES[@]}"
     do
         echo "Install requirement packages."

@@ -6,8 +6,7 @@ I needed an easily replicable build system to build PJSIP http://www.pjsip.org/ 
 
 ## Prerequisite
 - Run on Mac OS
-- Java version
-- GCC, PCRE, OPENSSL, AUTOCONF, AUTOMAKE, LIBTOOL, BZIP2
+- JAVA, GCC, PCRE, OPENSSL, AUTOCONF, AUTOMAKE, LIBTOOL, BZIP2
 - GIT
 - NASM
 
@@ -70,7 +69,6 @@ PJSIP output logging as below mention
 [4]. https://en.wikipedia.org/wiki/Session_Initiation_Protocol
 [5]. https://trac.pjsip.org/repos/wiki/TLS
 [6]. https://www.tutorialspoint.com/session_initiation_protocol/index.htm
-
 ```
 
 ## About Project
