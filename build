@@ -45,6 +45,12 @@ function setConfigSite {
     then
         echo "#define PJMEDIA_HAS_G729_CODEC 1" >> "$CONFIG_SITE_PATH"
     fi
+
+    if [ "${ENABLE_VIDEO}" == "1" ]
+    then
+        echo "#define PJMEDIA_HAS_VIDEO 1" >> "$CONFIG_SITE_PATH"
+    fi
+
     echo ".... Done ...."
 }
 
