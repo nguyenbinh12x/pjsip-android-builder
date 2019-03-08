@@ -63,16 +63,6 @@ PJSIP output logging as below mention
 ```
 
 
-The script is going to create a new folder inside the output named <b>pjsip-output-build</b> organized as follows:
-```
-pjsip-output-build
- |-- logs/  contains the full build log for each target architecture
- |-- lib/   contains the compiled libraries for each target architecture
- |-- org/   contains PJSUA Java wrapper to work with the library
-   
-```
-
-
 ## About Project
     PJSIP Android Builder run on Mac Os
     Author: Aleksandar Gotev (alex.gotev@mobimesh.it) - VoiSmart Srl
