@@ -88,7 +88,7 @@ DOWNLOAD_LIBYUV=0
 DOWNLOAD_OPUS=1
 
 # enable/disable remove tools 
-REMOVE_TOOLS=0
+REMOVE_TOOLS=1
 
 # enable/disable permission folder
 SET_PERMISSIONS=0
