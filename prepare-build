@@ -2,8 +2,6 @@
 
 . config
 
-PATCH_DIR=$BASEDIR/patches
-
 # Create Download directory if it does not exist
 if [ ! -d "$DOWNLOAD_DIR" ]
 then
@@ -109,7 +107,7 @@ then
     then
         echo ".... Starting Apply patch to support G.729 codes ....."
         cd ${BASEDIR}
-        bash ${PATCH_DIR}/support_g729/install.sh
+        ./patch_support_g729.sh
         echo ".... G.729 codes -> Done .... "
     fi
 
@@ -118,7 +116,7 @@ then
         then
         echo ".... Starting Apply patch to use a fixed Call-ID ....."
         cd ${BASEDIR}
-        bash ${PATCH_DIR}/fixed_callid/patch.sh
+        ./patch_fixed_callid.sh
         echo "....  Fixed Call-ID -> Done .... "
     fi
 
@@ -127,7 +125,7 @@ then
     then
         echo ".... Starting Apply patch to PJSIP 2.6 ....."
         cd ${BASEDIR}
-        bash ${PATCH_DIR}/changeset_5601/patch.sh
+        ./patch_changeset_5601.sh
         echo "....  Fixed pjsip 2.7 -> Done .... "
     fi
 fi
