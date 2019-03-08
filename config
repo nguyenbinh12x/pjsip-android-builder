@@ -1,0 +1,99 @@
+# you can define some environment variable.
+
+################################ define enviroment variable	     ##################################
+#assumption build libs on Mac OS, we use NDK: r13b, SDK: r25.2.5, PJSIP: 2.8, OPENSSL: 1.0.2g, SWIG: 3.0.12
+
+# get current directory
+BASEDIR="$(pwd)"
+
+# define download folder
+DOWNLOAD_DIR="$BASEDIR/tools"
+
+# define output folder.
+BUILD_DIR="$BASEDIR/output"
+
+# define NDK
+NDK_VERSION=r13b
+# NDK_VERSION=r12b
+NDK_DOWNLOAD_URL="https://dl.google.com/android/repository/android-ndk-$NDK_VERSION-darwin-x86_64.zip"
+NDK_DIR_NAME="android-ndk-$NDK_VERSION"
+
+# define SDK
+SDK_TOOLS_VERSION=r25.2.5
+SDK_DOWNLOAD_URL="https://dl.google.com/android/repository/tools_$SDK_TOOLS_VERSION-macosx.zip"
+SDK_DIR_NAME="android-sdk-macosx"
+
+# define PJSIP
+PJSIP_VERSION=2.8
+PJSIP_DOWNLOAD_URL="http://www.pjsip.org/release/$PJSIP_VERSION/pjproject-$PJSIP_VERSION.tar.bz2"
+PJSIP_DIR_NAME="pjproject-$PJSIP_VERSION"
+PJSIP_BUILD_OUT_PATH="$BUILD_DIR/pjsip-build-output"
+
+# define SWIG
+SWIG_VERSION=3.0.12
+SWIG_DOWNLOAD_URL="https://nchc.dl.sourceforge.net/project/swig/swig/swig-$SWIG_VERSION/swig-$SWIG_VERSION.tar.gz"
+SWIG_DIR_NAME="swig-$SWIG_VERSION"
+
+# define OPENSSL
+OPENSSL_VERSION=1.0.2g
+OPENSSL_DOWNLOAD_URL="https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz"
+OPENSSL_DIR_NAME="openssl-$OPENSSL_VERSION"
+OPENSSL_BUILD_OUT_PATH="$BUILD_DIR/openssl-build-output"
+
+# Configure the target NDK toolchain to use when compiling OpenH264
+OPENSSL_TARGET_NDK_LEVEL=23
+
+# define OPENH264
+OPENH264_VERSION=1.6.0
+OPENH264_DOWNLOAD_URL="https://github.com/cisco/openh264/archive/v$OPENH264_VERSION.tar.gz"
+OPENH264_DIR_NAME="openh264-$OPENH264_VERSION"
+OPENH264_BUILD_OUT_PATH="$BUILD_DIR/openh264-build-output"
+OPENH264_TARGET_NDK_LEVEL=23
+
+# define OPUS
+OPUS_VERSION=1.2.1
+OPUS_DOWNLOAD_URL="https://archive.mozilla.org/pub/opus/opus-$OPUS_VERSION.tar.gz"
+OPUS_DIR_NAME="opus-$OPUS_VERSION"
+OPUS_BUILD_OUT_PATH="$BUILD_DIR/opus-build-output"
+
+# define Target ABI
+# TARGET_ARCHS=("armeabi-v7a" "x86" "arm64-v8a" "x86_64")
+TARGET_ARCHS=("armeabi-v7a" "arm64-v8a" "x86")
+
+# Android APIs to setup
+SETUP_ANDROID_APIS=("23" "25")
+BUILD_TOOLS_VERSION=25
+TARGET_ANDROID_API=25
+
+##########################      configuration       ###########################
+# install some denpendency packages
+SETUP_PACKAGES=0
+# you can add more than packages as below lists
+INSTALLED_PACKAGES=("bzip2" "nasm" )
+
+# enable/disable download package
+DOWNLOAD_NDK=1
+DOWNLOAD_SDK=1
+DOWNLOAD_ANDROID_APIS=1
+DOWNLOAD_PJSIP=1
+
+# enable/disable codecs
+ENABLE_G729=1
+USE_FIXED_CALLID=1
+
+DOWNLOAD_SWIG=1
+DOWNLOAD_OPENSSL=1
+DOWNLOAD_OPENH264=1
+DOWNLOAD_LIBYUV=0
+DOWNLOAD_OPUS=1
+
+# enable/disable remove tools 
+REMOVE_TOOLS=0
+
+# enable/disable permission folder
+SET_PERMISSIONS=0
+OWNER="root"
+
+##########################      end configuration       ###########################
+
+

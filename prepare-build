@@ -1,0 +1,207 @@
+#!/bin/bash -e
+
+. config
+
+PATCH_DIR=$BASEDIR/patches
+
+# Create Download directory if it does not exist
+if [ ! -d "$DOWNLOAD_DIR" ]
+then
+  mkdir $DOWNLOAD_DIR
+fi
+
+# Create Build directory if it does not exist
+if [ ! -d "$BUILD_DIR" ]
+then
+  mkdir $BUILD_DIR
+fi
+
+#Force use of GCC instead of ndk default CLANG
+export NDK_TOOLCHAIN_VERSION=4.9
+export PATH="$NDK_TOOLCHAIN_VERSION:$PATH"
+
+if [ "$SETUP_PACKAGES" == "1" ]
+then
+    # Setup Dependency packages
+    for packages in "${INSTALLED_PACKAGES[@]}"
+    do
+        echo "Install requirement packages."
+        brew install ${packages}
+    done
+
+fi
+
+if [ "$DOWNLOAD_NDK" == "1" ]
+then
+
+    echo ""
+    echo "Downloading Android NDK ${NDK_VERSION} ..."
+    echo ""
+
+    cd $DOWNLOAD_DIR
+    curl -L -# -o ndk.zip "$NDK_DOWNLOAD_URL" 2>&1
+    rm -rf "$NDK_DIR_NAME"
+    echo ""
+    echo "Android NDK downloaded!"
+    echo ""
+    echo "Extracting Android NDK ..."
+    echo ""
+    unzip ndk.zip -d ndk
+    mv ndk/$NDK_DIR_NAME .
+    rm -rf ndk
+    rm -rf ndk.zip
+    echo "....  NDK ${NDK_VERSION} -> Done .... "
+fi
+
+if [ "$DOWNLOAD_SDK" == "1" ]
+then
+
+    echo ""
+    echo "Downloading Android SDK Tools version ${SDK_TOOLS_VERSION} ..."
+    cd $DOWNLOAD_DIR
+    curl -L -# -o sdk.zip "$SDK_DOWNLOAD_URL" 2>&1
+    rm -rf "$SDK_DIR_NAME"
+    mkdir $SDK_DIR_NAME
+    echo ""
+    echo "Android SDK downloaded!"
+    echo ""
+    echo "Extracting Android SDK ..."
+    echo ""
+    unzip sdk.zip -d $SDK_DIR_NAME
+    rm -rf sdk.zip
+    echo "....  SDK ${SDK_TOOLS_VERSION} -> Done .... "
+fi
+
+if [ "$DOWNLOAD_ANDROID_APIS" == "1" ]
+then
+    cd $DOWNLOAD_DIR/${SDK_DIR_NAME}/tools
+
+    ALL_SDK=$(./android list sdk --all)
+
+    for api in "${SETUP_ANDROID_APIS[@]}"
+    do
+        echo "\n\nDownloading Android API Platform ${api}..."
+        PACKAGE=$(echo "${ALL_SDK}" | grep "API ${api}" | head -n 1 | awk '{print $1}' | cut -d'-' -f 1)
+        echo yes | ./android update sdk --all --filter ${PACKAGE} --no-ui --force
+    done
+
+    PACKAGE=$(echo "${ALL_SDK}" | grep "Android SDK Platform-tools" | head -n 1 | awk '{print $1}' | cut -d'-' -f 1)
+    echo yes | ./android update sdk --all --filter ${PACKAGE} --no-ui --force
+
+    PACKAGE=$(echo "${ALL_SDK}" | grep "Build-tools" | grep "${BUILD_TOOLS_VERSION}" | head -n 1 | awk '{print $1}' | cut -d'-' -f 1)
+    echo yes | ./android update sdk --all --filter ${PACKAGE} --no-ui --force
+    echo "....  APIS ${BUILD_TOOLS_VERSION} -> Done .... "
+fi
+
+if [ "$DOWNLOAD_PJSIP" == "1" ]
+then
+    echo ""
+    echo "Downloading PJSIP ${PJSIP_VERSION} ..."
+    echo ""
+    cd $DOWNLOAD_DIR
+    curl -L -# -o pjsip.tar.bz2 "$PJSIP_DOWNLOAD_URL" 2>&1
+    rm -rf "$PJSIP_DIR_NAME"
+    echo "PJSIP downloaded!"
+    echo "Extracting PJSIP ..."
+    tar xjf pjsip.tar.bz2 && rm -rf pjsip.tar.bz2
+
+    # G.729 Codec PATCH
+    if [ "${ENABLE_G729}" == "1" ]
+    then
+        echo ".... Starting Apply patch to support G.729 codes ....."
+        cd ${BASEDIR}
+        bash ${PATCH_DIR}/support_g729/install.sh
+        echo ".... G.729 codes -> Done .... "
+    fi
+
+    # Fixed Call-ID PATCH
+    if [ "${USE_FIXED_CALLID}" == "1" ]
+        then
+        echo ".... Starting Apply patch to use a fixed Call-ID ....."
+        cd ${BASEDIR}
+        bash ${PATCH_DIR}/fixed_callid/patch.sh
+        echo "....  Fixed Call-ID -> Done .... "
+    fi
+
+    #Changeset 5601 [fixed in pjsip 2.7] PATCH - only for pjsip 2.6
+    if [ "${PJSIP_VERSION}" == "2.6" ]
+    then
+        echo ".... Starting Apply patch to PJSIP 2.6 ....."
+        cd ${BASEDIR}
+        bash ${PATCH_DIR}/changeset_5601/patch.sh
+        echo "....  Fixed pjsip 2.7 -> Done .... "
+    fi
+fi
+
+if [ "$DOWNLOAD_SWIG" == "1" ]
+then
+    echo ""
+    echo "Downloading SWIG ${SWIG_VERSION} ..."
+    echo ""
+    cd $DOWNLOAD_DIR
+    curl -L -# -o swig.tar.gz "$SWIG_DOWNLOAD_URL" 2>&1
+    rm -rf "$SWIG_DIR_NAME"
+    echo "SWIG downloaded!"
+    echo "Extracting SWIG ..."
+    tar xzf swig.tar.gz && rm -rf swig.tar.gz
+    cd "$SWIG_DIR_NAME"
+    ./configure
+    make && sudo make install
+    cd ..
+    rm -rf "$SWIG_DIR_NAME"
+    echo "....  SWIG ${SWIG_VERSION} -> Done .... "
+fi
+
+if [ "$DOWNLOAD_OPENSSL" == "1" ]
+then
+    echo ""
+    echo "Downloading OpenSSL ${OPENSSL_VERSION} ..."
+    echo ""
+
+    cd $DOWNLOAD_DIR
+    curl -L -# -o openssl.tar.gz "$OPENSSL_DOWNLOAD_URL" 2>&1
+    rm -rf "$OPENSSL_DIR_NAME"
+    echo "OpenSSL downloaded!"
+    echo "Extracting OpenSSL ..."
+    tar xzf openssl.tar.gz && rm -rf openssl.tar.gz
+    cd "${BASEDIR}"
+    ./openssl-build-target
+    echo "....  OPENSSL ${OPENSSL_VERSION} -> Done .... "
+fi
+
+if [ "$DOWNLOAD_OPENH264" == "1" ]
+then
+    echo ""
+    echo "Downloading OpenH264 ${OPENH264_VERSION} ..."
+    echo ""
+    cd $DOWNLOAD_DIR
+    curl -L -# -o openh264.tar.gz "$OPENH264_DOWNLOAD_URL" 2>&1
+    rm -rf "${OPENH264_DIR_NAME}"
+    echo "OpenH264 downloaded!"
+    echo "Extracting OpenH264 ..."
+    tar xzf openh264.tar.gz && rm -rf openh264.tar.gz
+    cd ${BASEDIR}
+    ./openh264-build-target || true
+    echo "....  OPENH264 ${OPENH264_VERSION} -> Done .... "
+fi
+
+if [ "$DOWNLOAD_OPUS" == "1" ]
+then
+    echo ""
+    echo "Downloading Opus ${OPUS_VERSION} ..."
+    echo ""
+    cd "$DOWNLOAD_DIR"
+    curl -L -# -o opus.tar.gz "$OPUS_DOWNLOAD_URL" 2>&1
+    rm -rf "${OPUS_DIR_NAME}"
+    echo "Opus downloaded!"
+    echo "Extracting Opus ..."
+    tar xzf opus.tar.gz && rm -rf opus.tar.gz
+    cd ${BASEDIR}
+    ./opus-build || true
+    echo "....  OPUS ${OPUS_VERSION} -> Done .... "
+fi
+
+echo ""
+echo ".... Completed install -> prepare-build -> Done ....."
+echo ".... Please run ./build to build PJSIP ...."
+
