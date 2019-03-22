@@ -4,20 +4,16 @@
 
 CUR_DIR="$(pwd)"
 OPENSSL_PATH="$DOWNLOAD_DIR/${OPENSSL_DIR_NAME}"
-
+NDK_VER=r12b
+NDK_D_NAME="android-ndk-$NDK_VER"
 
 ############################      FUNCTIONS     ##############################
 
 function getNDKForOpenSSL {
 
     #NDK Version to download
-    NDK_VER=r12b
     NDK_URL="https://dl.google.com/android/repository/android-ndk-$NDK_VER-darwin-x86_64.zip"
-    NDK_D_NAME="android-ndk-$NDK_VER"
-
-    echo ""
     echo "Downloading Android NDK ${NDK_VER} for OpenSSL ..."
-    echo ""
 
     cd $OPENSSL_PATH
     curl -L -# -o ndk.zip "$NDK_URL" 2>&1
@@ -55,7 +51,7 @@ function clearNdkDirectory {
 
 # Get the NDK version for OpenSSL which may differ from the one specified in config.conf
 # if DOWNLOAD_NDK_R12B enabled
-if [ "DOWNLOAD_NDK_R12B" == "1" ]
+if [ "$DOWNLOAD_NDK_R12B" == "1" ]
 then
     echo "... Starting download NDK r12b ..."
     NDK_PATH="$OPENSSL_PATH/${NDK_D_NAME}"
