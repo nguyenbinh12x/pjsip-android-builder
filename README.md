@@ -61,6 +61,13 @@ PJSIP output logging as below mention
 
 ```
 
+#### Updated
+```
+- Install openssl-1.0.2g with android-ndk-r13b
+- Install pjsip 2.8 with android-ndk-r13b
+```
+
+
 #### References
 ```
 [1]. https://trac.pjsip.org/repos/

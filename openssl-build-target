@@ -35,24 +35,36 @@ function getNDKForOpenSSL {
 }
 
 function clearBuildDirectory {
+    echo " ... Removing OPENSSL_BUILD_OUT_PATH ..."
     rm -rf "${OPENSSL_BUILD_OUT_PATH}"
     mkdir -p "${LIB_PATH}"
     mkdir -p "${LOG_PATH}"
 }
 
 function clearNdkDirectory {
-    rm -rf $NDK_PATH
+    if [ -d "$OPENSSL_PATH/${NDK_D_NAME}" ]
+    then
+        echo "... Removing NDK ... "
+        rm -rf $OPENSSL_PATH/${NDK_D_NAME}
+    fi
 }
-
 
 ##############################################################################
 ############################        MAIN          ############################
 ##############################################################################
 
 # Get the NDK version for OpenSSL which may differ from the one specified in config.conf
-getNDKForOpenSSL
+# if DOWNLOAD_NDK_R12B enabled
+if [ "DOWNLOAD_NDK_R12B" == "1" ]
+then
+    echo "... Starting download NDK r12b ..."
+    NDK_PATH="$OPENSSL_PATH/${NDK_D_NAME}"
+    getNDKForOpenSSL
+else
+    echo " ... Set NDK_PATH for r13b ..."
+    NDK_PATH="$DOWNLOAD_DIR/$NDK_DIR_NAME"
+fi
 
-NDK_PATH="$OPENSSL_PATH/${NDK_D_NAME}"
 #GCC_VERSION=$(gcc --version | grep gcc | awk '{print $4}' | cut -d'.' -f1,2)
 GCC_VERSION=4.9
 LIB_PATH="${OPENSSL_BUILD_OUT_PATH}/libs"
